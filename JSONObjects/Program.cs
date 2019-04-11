@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net;
-using Newtonsoft.Json;
+using System.Xml;
 
 namespace JSONObjects
 {
@@ -13,22 +11,24 @@ namespace JSONObjects
     {
         static void Main(string[] args)
         {
-            string json;
-
-            using (WebClient webClient = new WebClient())
+            try
             {
-                json = webClient.DownloadString("https://api.jsonbin.io/b/5caefde5814711458b4021df/5");
+                var jsonObjectList = new JSONObjectList("https://api.jsonbin.io/b/5caefde5814711458b4021df/5");
+                Console.WriteLine("Data read correctly");
+
+                jsonObjectList.Sort();
+                Console.WriteLine("Data sorted");
+
+                jsonObjectList.SaveToXML("D:\\file.xml");
+                Console.WriteLine("File saved");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error occured: {0}", e);
+                return;
             }
 
-            var JSONObjectsList = JsonConvert.DeserializeObject<List<JSONObject>>(json).OrderBy(o=>o.value);
-
-            
-
-            foreach (var item in JSONObjectsList)
-            {
-                Console.WriteLine("id: {0} ,name: {1}, value: {2}, registered: {3}",
-                    item.id, item.name, item.value, item.registered);
-            }
+            Console.WriteLine("Operation successful!");
         }
     }
 }
